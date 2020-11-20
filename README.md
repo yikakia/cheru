@@ -14,7 +14,7 @@ go build
 ```
 编译在 [clipboard2str](./cmd/clipboard2str)中的程序，可以替换剪贴板中的切噜语为正常语句。
 ```bash
-cd ./cmd/clipboar2str/
+cd ./cmd/clipboard2str
 go build
 ./clipboar2str 
 ```

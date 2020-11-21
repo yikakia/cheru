@@ -1,6 +1,7 @@
 package cheru
 
 import (
+	"regexp"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -9,6 +10,7 @@ import (
 var cheruSET string = "切卟叮咧哔唎啪啰啵嘭噜噼巴拉蹦铃"
 var runecheruSET []rune = []rune(cheruSET)
 var cheruMap map[rune]byte
+var reg = &regexp.Regexp{}
 
 func init() {
 	cnt := byte(0)
@@ -17,6 +19,7 @@ func init() {
 		cheruMap[char] = cnt
 		cnt++
 	}
+	reg = regexp.MustCompile(`切[切卟叮咧哔唎啪啰啵嘭噜噼巴拉蹦铃]{1,}`)
 }
 
 // 把单词转换成切噜词
@@ -62,6 +65,14 @@ func cheru2word(w string) string {
 	return res.String()
 }
 
+// isCheru 读入字符串，判断该字符串是不是切噜词
+func isCheru(s string) bool {
+	if loc := reg.FindIndex([]byte(s)); len(loc) != 2 || loc[1]-loc[0] != len([]byte(s)) {
+		return false
+	}
+	return true
+}
+
 // Str2cheru 把字符串转换成切噜语
 func Str2cheru(s string) string {
 	res := strings.Builder{}
@@ -77,6 +88,10 @@ func Cheru2str(s string) string {
 	res := strings.Builder{}
 	words := afterFieldsFunc(s, unicode.IsPunct)
 	for _, word := range words {
+		if !isCheru(word) {
+			res.WriteString(word)
+			continue
+		}
 		res.WriteString(cheru2word(word))
 	}
 	return res.String()
